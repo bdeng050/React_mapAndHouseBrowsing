@@ -5,21 +5,19 @@ import axios from 'axios'
 import { getCurrentCity } from '../../utils'
 import {List} from 'react-virtualized';
 
-const list = Array(100).fill('react-virtualized')
-  
-  function rowRenderer({
-    key, // Unique key within array of rows
-    index, // Index of row within collection
-    isScrolling, // The List is currently being scrolled
-    isVisible, // This row is visible within the List (eg it is not an overscanned row)
-    style, // Style object to be applied to row (to position it)
-  }) {
-    return (
-      <div key={key} style={style}>
-        loki+{list[index]}
-      </div>
-    );
+const formatCityIndex=(letter)=>{
+  switch(letter){
+    case '#':
+      return 'Current City'
+    case 'hot':
+      return 'popular City' 
+    
+    default:
+      return letter
+      
   }
+}
+
 export default class CityList extends React.Component{
   state ={
     cityList: {},
@@ -41,11 +39,17 @@ export default class CityList extends React.Component{
         cityList['hot']= hotRes.data.body
         console.log(cityList)
         cityIndex.unshift('hot')
-        console.log(cityIndex)
         const curCity= await getCurrentCity()
         console.log('Current City:',curCity)
         cityList['#']=[curCity]
         cityIndex.unshift('#')
+        //console.log('cityIndex',cityIndex)
+        this.setState(
+          {
+            cityList,
+            cityIndex
+          }
+        )
     }
 
      formatCityData(list){
@@ -66,6 +70,24 @@ export default class CityList extends React.Component{
           cityIndex
         }
       }
+      rowRenderer=({
+        key, // Unique key within array of rows
+        index, // Index of row within collection
+        isScrolling, // The List is currently being scrolled
+        isVisible, // This row is visible within the List (eg it is not an overscanned row)
+        style, // Style object to be applied to row (to position it)
+      }) =>{
+        const cityIndex= this.state.cityIndex
+        //console.log('cityIndex',cityIndex)
+        const letter= cityIndex[index]
+        //console.log(letter)
+        return (
+          <div key={key} style={style} className="city">
+            <div>{formatCityIndex(letter)}</div>
+            <div>ShangHai</div>
+          </div>
+        );
+      }
 
     render(){
         return <div>
@@ -78,9 +100,9 @@ export default class CityList extends React.Component{
             <List
           width={300}
           height={300}
-          rowCount={list.length}
-          rowHeight={20}
-          rowRenderer={rowRenderer}
+          rowCount={this.state.cityIndex.length}
+          rowHeight={80}
+          rowRenderer={this.rowRenderer}
         />
         </div>
 
