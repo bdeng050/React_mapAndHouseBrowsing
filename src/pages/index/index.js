@@ -82,14 +82,14 @@ export default class index extends React.Component{
 
       async getPersons(){
         const res= await axios.get('http://localhost:8081/allPerson');
-        console.log('这些人是',res);
+        console.log('这些人是',res.data[0]);
       }
       async componentDidMount() {
         // simulate img loading
         
         this.getSwipers()
         this.getGroups()
-       // this.getPersons()
+        this.getPersons()
          //const curCity=new window.BMap.LocalCity()
          //console.log('当前城市',curCity)
       //    curCity.get(async res=>{

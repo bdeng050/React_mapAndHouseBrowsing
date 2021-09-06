@@ -4,6 +4,7 @@ import './index.scss'
 import axios from 'axios'
 import { getCurrentCity } from '../../utils'
 import {List} from 'react-virtualized';
+import { Toast } from 'antd-mobile'
 
 const formatCityIndex=(letter)=>{
   switch(letter){
@@ -13,11 +14,16 @@ const formatCityIndex=(letter)=>{
       return 'popular City' 
     
     default:
-      return letter
+      return letter.toUpperCase()
       
   }
 }
+// 索引（A、B等）的高度
+const TITLE_HEIGHT = 36
+// 每个城市名称的高度
+const NAME_HEIGHT = 50
 
+const HOUSE_CITY = ['北京', '上海', '广州', '深圳']
 export default class CityList extends React.Component{
   state ={
     cityList: {},
@@ -29,7 +35,7 @@ export default class CityList extends React.Component{
 
     async getCityList(){
         const res= await axios.get('http://localhost:8080/area/city?level=1')
-        //console.log(res)
+        console.log('res',res)
         const hotRes= await axios.get('http://localhost:8080/area/hot')
         //console.log(hotRes)
         const{cityList,cityIndex} = this.formatCityData(res.data.body)
@@ -37,12 +43,13 @@ export default class CityList extends React.Component{
         // console.log(cityList)
         // console.log(cityIndex)
         cityList['hot']= hotRes.data.body
-        console.log(cityList)
+        console.log('formatCityList',cityList)
         cityIndex.unshift('hot')
         const curCity= await getCurrentCity()
-        console.log('Current City:',curCity)
+        //console.log('Current City:',curCity)
         cityList['#']=[curCity]
         cityIndex.unshift('#')
+        console.log(cityList['b'][0])
         //console.log('cityIndex',cityIndex)
         this.setState(
           {
@@ -78,16 +85,67 @@ export default class CityList extends React.Component{
         style, // Style object to be applied to row (to position it)
       }) =>{
         const cityIndex= this.state.cityIndex
+        const cityList= this.state.cityList
         //console.log('cityIndex',cityIndex)
         const letter= cityIndex[index]
-        //console.log(letter)
+        //console.log(this.state.cityList[letter])
         return (
           <div key={key} style={style} className="city">
             <div>{formatCityIndex(letter)}</div>
-            <div>ShangHai</div>
+            {cityList[letter].map(item =>(
+          <div
+            className="name"
+            key={item.value}
+            onClick={() => this.changeCity(item)}
+          >
+            {item.label}
+          </div>
+        ))}
           </div>
         );
       }
+      getRowHeight = ({ index }) => {
+        // 索引标题高度 + 城市数量 * 城市名称的高度
+        // TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT
+        const { cityList, cityIndex } = this.state
+        return TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT
+      }
+
+      // renderCityIndex(){
+      //   return this.state.cityIndex.map(item=>(
+      //     <li className="city-idex-item">
+      //       <span className="index=active">#</span>
+      //     </li>
+      //   ))
+      // }
+      // renderCityIndex() {
+      //   // 获取到 cityIndex，并遍历其，实现渲染
+      //   const { cityIndex, activeIndex } = this.state
+      //   return cityIndex.map((item, index) => (
+      //     <li
+      //       className="city-index-item"
+      //       key={item}
+      //       onClick={() => {
+      //         // console.log('当前索引号：', index)
+      //         this.cityListComponent.current.scrollToRow(index)
+      //       }}
+      //     >
+      //       <span className={activeIndex === index ? 'index-active' : ''}>
+      //         {item === 'hot' ? '热' : item.toUpperCase()}
+      //       </span>
+      //     </li>
+      //   ))
+      // }
+      changeCity({ label, value }) {
+        if (HOUSE_CITY.indexOf(label) > -1) {
+          // 有
+          localStorage.setItem('hkzf_city', JSON.stringify({ label, value }))
+          this.props.history.go(-1)
+        } else {
+          Toast.info('该城市暂无房源数据', 1, null, false)
+        }
+      }
+     
 
     render(){
         return <div>
@@ -98,12 +156,15 @@ export default class CityList extends React.Component{
         >
             城市选择</NavBar>
             <List
-          width={300}
-          height={300}
+          width={1300}
+          height={1000}
           rowCount={this.state.cityIndex.length}
-          rowHeight={80}
+          rowHeight={this.getRowHeight}
           rowRenderer={this.rowRenderer}
         />
+        {/* <ul className="city-index">
+          {this.renderCityIndex()}
+        </ul> */}
         </div>
 
         
