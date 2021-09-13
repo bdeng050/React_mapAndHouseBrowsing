@@ -2,6 +2,7 @@ import React from 'react';
 import './index.scss'
 import axios from 'axios'
 import styles from './index.module.css'
+import {Toast} from 'antd-mobile'
 
 const labelStyle = {
     // cursor: 'pointer',
@@ -14,7 +15,9 @@ const labelStyle = {
   }
 export default class Map extends React.Component{
     state={
-        houseList: []
+        houseList: [],
+        isshowList: false
+
     }
     componentDidMount() {
         this.initMap() 
@@ -37,53 +40,14 @@ export default class Map extends React.Component{
         map.addControl(new window.BMap.ScaleControl())  
 
         this.renderOverlays(value)
-        // const res=  await axios.get(`http://localhost:8080/area/map?id=${value}`)
-        // console.log('res',res)
-        // res.data.body.forEach(item=>{
-        //     //const{coord:{longitude,latitude}}
-        //     const areaName= item.label
-        //     const count= item.count
-        //     const value= item.value
-        //     const opts={
-        //         position: new window.BMap.Point(item.coord.longitude,item.coord.latitude),
-        //         offset: new window.BMap.Size(-35,-35) 
-        //     }
-        //     const label= new window.BMap.Label('',opts)
-        //     //console.log('label',label)
-        //     label.id= value
-        //     label.setContent(`
-        //     <div>
-        //     <p>${areaName}</p>
-        //     <p>${count}Remaining</p>
-        //     </div>
-        //     `)
-        //     //label.setStyle(labelStyle)
-            
-        //     label.addEventListener('click',()=>{
-        //         console.log(label.id)
-        //         map.centerAndZoom(new window.BMap.Point(item.coord.longitude,item.coord.latitude),13)
-        //         map.clearOverlays()
-        //     })
-        //     map.addOverlay(label)
-        // })
-        
-        // const opts={
-        //     position: point,
-        //     offset: new window.BMap.Size(-35,-35) 
-        // }
-        //const label= new window.BMap.Label('',opts)
-        // label.setContent(
-        //     '<div><p>PUDONG</p><p>99TAO</p></div>'
-        // )
-        //label.setStyle(labelStyle)
-        
-        // label.addEventListener('click',()=>{
-        //     console.log('click')
-        // })
-        // map.addOverlay(label)
         }      
         }, 
         label);
+        map.addEventListener('movestart',()=>{
+          this.setState({
+            isshowList:false
+          })  
+        })
 
       }
 
@@ -115,11 +79,15 @@ export default class Map extends React.Component{
           }
       }
       async getHouseList(id){
+        Toast.loading('FukU',0,null,false)
           const res= await axios.get(`http://localhost:8080/houses?cityId=${id}`)
-          console.log('HouseList',res)
+          //console.log('HouseList',res)
           this.setState({
-              houseList: res.data.body.list
+            houseList: res.data.body.list,
+            isshowList: true
           })
+          Toast.hide()
+          console.log('HouseList',this.state.houseList)
       }
       createR(point,name,count,id){
         const opts={
@@ -173,7 +141,9 @@ export default class Map extends React.Component{
       }
       
       async renderOverlays(id){
+        Toast.loading('JustFkingWait',0,null,false)
           const res= await axios.get(`http://localhost:8080/area/map?id=${id}`)
+          Toast.hide()
           console.log('renderOverlays',res)
           const Data=res.data.body
           const nextZoom=this.getNextTypeZoom()
@@ -188,20 +158,31 @@ export default class Map extends React.Component{
               <div
           className={[
             styles.houseList,
-            styles.show
+            this.state.isshowList ? styles.show : ''
           ].join(' ')}
         >
           <div className={styles.titleWrap}>
-            <h1 className={styles.listTitle}>房屋列表</h1>
-            {/* <Link className={styles.titleMore} to="/home/list">
-              更多房源
-            </Link> */}
+            <h1 className={styles.listTitle}>Housing INFO</h1>
           </div>
-
           <div className={styles.houseItems}>
-            <h1>ww</h1>
+          {this.state.houseList.map(item => (
+            <div>
+              <div>
+                <img src={`http://localhost:8080${item.houseImg}`}></img>
+              </div>
+              <div>
+              House type:{item.title}
+              </div>
+              <div>
+               Price:{item.price}
+              </div>
+            </div>
+          
+          ))}
+              
+            
           </div>
-        </div>
+              </div>
           </div>
       }
 }
