@@ -111,31 +111,7 @@ export default class CityList extends React.Component{
         return TITLE_HEIGHT + cityList[cityIndex[index]].length * NAME_HEIGHT
       }
 
-      // renderCityIndex(){
-      //   return this.state.cityIndex.map(item=>(
-      //     <li className="city-idex-item">
-      //       <span className="index=active">#</span>
-      //     </li>
-      //   ))
-      // }
-      // renderCityIndex() {
-      //   // 获取到 cityIndex，并遍历其，实现渲染
-      //   const { cityIndex, activeIndex } = this.state
-      //   return cityIndex.map((item, index) => (
-      //     <li
-      //       className="city-index-item"
-      //       key={item}
-      //       onClick={() => {
-      //         // console.log('当前索引号：', index)
-      //         this.cityListComponent.current.scrollToRow(index)
-      //       }}
-      //     >
-      //       <span className={activeIndex === index ? 'index-active' : ''}>
-      //         {item === 'hot' ? '热' : item.toUpperCase()}
-      //       </span>
-      //     </li>
-      //   ))
-      // }
+      
       changeCity({ label, value }) {
         if (HOUSE_CITY.indexOf(label) > -1) {
           // 有
