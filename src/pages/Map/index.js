@@ -174,7 +174,7 @@ export default class Map extends React.Component{
               House type:{item.title}
               </div>
               <div>
-               Price:{item.price}
+               <h5>Price: {item.price}RMB</h5>
               </div>
             </div>
           
