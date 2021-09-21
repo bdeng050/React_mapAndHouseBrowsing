@@ -26,7 +26,9 @@ export default class HouseList extends React.Component{
     value: null,
     cityList:[],
     list1:[],
-    list2:[]
+    list2:[],
+    houseList:[]
+
     // cityfilter: [
     //   cityList,
     //   season
@@ -89,8 +91,13 @@ export default class HouseList extends React.Component{
     // )
     // console.log('citylist',this.state.cityList)
  }
- fetchData(){
-   
+ matchList(num){
+   if(num==1){
+     return this.state.list1
+   }
+   else{
+     return this.state.list2
+   }
  }
  async formatCityList(data){
   const ityList= []
@@ -98,11 +105,12 @@ export default class HouseList extends React.Component{
   data.forEach(
     item=>{
       count=count+1
-      //console.log('result',this.state.list2)    
+      //console.log('result',this.state.list2) 
+      var list= this.matchList(count)   
       var city={
         label: item.label,
         value: item.value,
-        children: this.state.list1
+        children: list
       }
       ityList.push(city)
     }
@@ -146,10 +154,21 @@ export default class HouseList extends React.Component{
 
  
   onChange = (value) => {
-    console.log(value);
     this.setState({
       value,
     });
+    //console.log(this.state.value[1]);
+    this.getHouseList(this.state.value[1])
+  }
+  async getHouseList(id){
+    const res= await axios.get(`http://localhost:8080/houses?cityId=${id}`)
+    this.setState(
+      {
+        houseList:res.data.body.list
+      }
+    )
+    console.log('rress',this.state.houseList)
+
   }
   onScrollChange = (value) => {
     console.log(value);
@@ -169,8 +188,30 @@ export default class HouseList extends React.Component{
           data={this.state.cityList}
           value={this.state.value}
           onChange={this.onChange}
-          onScrollChange={this.onScrollChange}
+          // onScrollChange={this.onScrollChange}
         /> 
+        <div>
+          <div >
+            <h1>Housing INFO</h1>
+          </div>
+          <div>
+          {this.state.houseList.map(item => (
+            <div>
+              <div>
+                <img src={`http://localhost:8080${item.houseImg}`}></img>
+              </div>
+              <div>
+              House type:{item.title}
+              </div>
+              <div>
+               <h5>Price: {item.price}RMB</h5>
+              </div>
+            </div>
+          
+          ))}
+          </div>
+          </div>
+         
           
         </div>
       )   
