@@ -152,6 +152,7 @@ export default class HouseList extends React.Component{
    }
   }
 
+
  
   onChange = (value) => {
     this.setState({
@@ -173,6 +174,10 @@ export default class HouseList extends React.Component{
   onScrollChange = (value) => {
     console.log(value);
   }
+  handleSubmit= (e) =>{
+    e.preventDefault()
+    console.log('click')
+  }
     render(){
       return(
         <div>
@@ -191,7 +196,7 @@ export default class HouseList extends React.Component{
           // onScrollChange={this.onScrollChange}
         /> 
         <div>
-          <div >
+          <div>
             <h1>Housing INFO</h1>
           </div>
           <div>
@@ -205,6 +210,11 @@ export default class HouseList extends React.Component{
               </div>
               <div>
                <h5>Price: {item.price}RMB</h5>
+               <form onSubmit={this.handleSubmit}>
+               <button  type="submit">
+              Login
+            </button>
+               </form>
               </div>
             </div>
           

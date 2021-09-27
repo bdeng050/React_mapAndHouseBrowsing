@@ -21,7 +21,8 @@ export default class Home extends React.Component{
         return <div>
             <Route path="/home/news" component={News}></Route>
             <Route path="/home/index" component={index}></Route>
-            <Route path="/home/list" component={HouseList}></Route>
+            {/* <Route path="/home/list" component={HouseList}></Route> */}
+            <Route path="/home/profile" component={Profile}></Route>
             
             <div style={this.state.fullScreen ? { position: 'fixed', height: '100%', width: '100%', top: 0 } : { height: 400 }}>
         <TabBar
