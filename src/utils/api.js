@@ -4,8 +4,11 @@ import { BASE_URL } from './url'
 import { getToken, removeToken } from './auth'
 
 // 创建axios示例
+// const API = axios.create({
+//   baseURL: BASE_URL
+// })
 const API = axios.create({
-  baseURL: BASE_URL
+  baseURL: 'http://localhost:8080'
 })
 
 /* 
@@ -34,14 +37,14 @@ API.interceptors.request.use(config => {
 })
 
 // 添加响应拦截器
-API.interceptors.response.use(response => {
-  // console.log(response)
-  const { status } = response.data
-  if (status === 400) {
-    // 此时，说明 token 失效，直接移除 token 即可
-    removeToken()
-  }
-  return response
-})
+// API.interceptors.response.use(response => {
+//   // console.log(response)
+//   const { status } = response.data
+//   if (status === 400) {
+//     // 此时，说明 token 失效，直接移除 token 即可
+//     removeToken()
+//   }
+//   return response
+// })
 
 export { API }

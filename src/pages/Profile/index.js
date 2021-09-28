@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { Link } from 'react-router-dom'
 import { Grid, Button, Modal } from 'antd-mobile'
+import {NavBar, Icon} from 'antd-mobile'
 
 import { BASE_URL, isAuth,removeToken, API } from '../../utils'
 import axios from 'axios'
@@ -9,16 +10,16 @@ import styles from './index.module.css'
 
 // 菜单数据
 const menus = [
-  { id: 1, name: '我的收藏', iconfont: 'icon-coll', to: '/favorate' },
-  { id: 2, name: '我的出租', iconfont: 'icon-ind', to: '/rent' },
-  { id: 3, name: '看房记录', iconfont: 'icon-record' },
-  {
-    id: 4,
-    name: '成为房主',
-    iconfont: 'icon-identity'
-  },
-  { id: 5, name: '个人资料', iconfont: 'icon-myinfo' },
-  { id: 6, name: '联系我们', iconfont: 'icon-cust' }
+  { id: 1, name: 'My Collection', iconfont: 'icon-coll', to:'./fav'},
+  { id: 2, name: 'My rent', iconfont: 'icon-ind', to: '/rent' },
+  // { id: 3, name: '看房记录', iconfont: 'icon-record' },
+  // {
+  //   id: 4,
+  //   name: '成为房主',
+  //   iconfont: 'icon-identity'
+  // },
+  // { id: 5, name: '个人资料', iconfont: 'icon-myinfo' },
+  // { id: 6, name: '联系我们', iconfont: 'icon-cust' }
 ]
 
 // 默认头像
@@ -39,37 +40,48 @@ export default class Profile extends Component {
   state = {
     tokens:'',
     // 是否登录
-    isLogin: null,
+    isLogin: '',
     // 用户信息
     userInfo: {
       avatar: '',
       nickname: ''
-    }
+    },
+    favList:[],
+    showFavList:true
   }
 
 
   // 注意：不要忘了在进入页面时调用方法 ！
   componentDidMount() {
-    this.getStart()
-    this.getUserInfo()
-  }
-  getStart(){
     const token= localStorage.getItem('hkzf_token')
-    this.setState({
-      tokens:token 
-  })
-    console.log('token',this.state.token)
-    if(token!==null){
-        this.setState({
-            isLogin:true
-        })
+    if(token!=null){
+      localStorage.setItem('isLogin',true)      
     }
     else{
-        this.setState({
-          isLogin:false
-      })
+      localStorage.setItem('isLogin',false)     
     }
-}
+    
+    //console.log('token',localStorage.getItem('isLogin'))
+    this.getUserInfo()
+  }
+//   getStart(){
+//     const token= localStorage.getItem('hkzf_token')
+//     console.log('token',this.state.token)
+//     this.setState({
+//       tokens:token 
+//   })
+//     //console.log('token',this.state.token)
+//     if(token!==null){
+//         this.setState({
+//             isLogin:true
+//         })
+//     }
+//     else{
+//         this.setState({
+//           isLogin:false
+//       })
+//     }
+// }
 
   // 退出
   logout = () => {
@@ -99,7 +111,7 @@ export default class Profile extends Component {
 
   async getUserInfo() {
       //this.isAuth()
-      console.log(this.state.isLogin)
+      
     // if (!this.state.isLogin) {
     //   // 未登录
     //   return
@@ -107,14 +119,17 @@ export default class Profile extends Component {
 
     // 发送请求，获取个人资料
     const token= localStorage.getItem('hkzf_token')
-    // console.log('TOKEN',this.state.tokens)
-    const res= await axios.get('http://localhost:8080/user',{
+    console.log('TOKEN',token)
+    console.log('LOGIN',localStorage.getItem('isLogin'))
+    const res= await axios.get('http://localhost:8080/user/favorites',{
         headers:{
             authorization: token
         }
     })
-
-     console.log('PersonInfo',res)
+    this.setState({
+      favList: res.data.body
+    })
+     console.log('userFav',this.state.favList)
     if (res.data.status === 200) {
       const { avatar, nickname } = res.data.body
       this.setState({
@@ -125,9 +140,7 @@ export default class Profile extends Component {
       })
     } else {
       // token 失效的情况，这种情况下， 应该将 isLogin 设置为 false
-      this.setState({
-        isLogin: false
-      })
+      localStorage.setItem('isLogin',false)  
     }
     //console.log('avatar',this.state.userInfo)
   }
@@ -135,10 +148,11 @@ export default class Profile extends Component {
     const { history } = this.props
 
     const {
-      isLogin,
       userInfo: { avatar, nickname }
     } = this.state
+    const isLogin= localStorage.getItem('isLogin')
     console.log('islog',isLogin)
+    console.log('info',this.state.userInfo)
 
     return (
 
@@ -179,7 +193,7 @@ export default class Profile extends Component {
                     type="primary"
                     size="small"
                     inline
-                    // onClick={() => history.push('/login')}
+                    onClick={() => history.push('/login')}
                     onClick={()=>console.log('click')}
                   >
                     去登录
@@ -195,29 +209,52 @@ export default class Profile extends Component {
         {/* 九宫格菜单 */}
         <Grid
           data={menus}
-          columnNum={3}
+          columnNum={2}
           hasLine={false}
           renderItem={item =>
             item.to ? (
               <Link to={item.to}>
-                <div className={styles.menuItem}>
+                <div className={styles.menuItem} onClick={()=>this.state.showFavList=true}>
                   <i className={`iconfont ${item.iconfont}`} />
                   <span>{item.name}</span>
                 </div>
               </Link>
             ) : (
-              <div className={styles.menuItem}>
+              <div className={styles.menuItem} onClick={()=>this.state.showFavList=true}>
                 <i className={`iconfont ${item.iconfont}`} />
                 <span>{item.name}</span>
               </div>
             )
           }
         />
-
-        {/* 加入我们 */}
-        <div className={styles.ad}>
-          <img src={BASE_URL + '/img/profile/join.png'} alt="" />
-        </div>
+        {this.state.showFavList?(
+        <div>
+        <NavBar
+        mode="light"
+        icon={<Icon type="left" />}
+        onLeftClick={() => this.props.history.go(-1)}
+        >
+            MY collection</NavBar>
+            {this.state.favList.map(item => (
+            <div>
+              <div>
+                <img src={`http://localhost:8080${item.houseImg}`}></img>
+              </div>
+              <div>
+              House type:{item.title}
+              </div>
+              <div>
+               <h5>Price: {item.price}RMB </h5>
+               <button onClick={(e)=>this.collections(item,e)}>
+                 Save to Collection
+               </button>                         
+              </div>
+            </div>
+          
+          ))}
+          
+        </div>):null}
+        
       </div>
     )
   }

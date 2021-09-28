@@ -2,24 +2,18 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import SearchHeader from '../../components/SearchHeader'
 import{Flex} from 'antd-mobile'
+import {Toast} from 'antd-mobile'
+
 import PropTypes from 'prop-types'
+
 // import Filter from './components/Filter'
 import { PickerView, WhiteSpace } from 'antd-mobile';
 import axios from 'axios'
+import { BASE_URL, isAuth, removeToken, API } from '../../utils'
 import './index.module.css'
 
 
 const {label,value}=JSON.parse(localStorage.getItem('hkzf_city'))
-// const season = [
-//   {
-//     label: '春',
-//     value: '春',
-//   },
-//   {
-//     label: '夏',
-//     value: '夏',
-//   },
-// ];
   
 export default class HouseList extends React.Component{
   state = {
@@ -28,39 +22,9 @@ export default class HouseList extends React.Component{
     list1:[],
     list2:[],
     houseList:[]
-
-    // cityfilter: [
-    //   cityList,
-    //   season
-    // ],
-    // province : [
-    //   {
-    //     label: '北京',
-    //     value: '01',
-    //     children: [
-    //       {
-    //         label: '东城区',
-    //         value: '01-1',
-    //       },
-    //       {
-    //         label: '西城区',
-    //         value: '01-2',
-    //       },
-    //       {
-    //         label: '崇文区',
-    //         value: '01-3',
-    //       },
-    //       {
-    //         label: '宣武区',
-    //         value: '01-4',
-    //       },
-    //     ],
-    //   },
-      
-    // ]
     
   }
-  //AREA|e4940177-c04c-383d
+
 
   componentDidMount(){
     //this.getHouseInfo()
@@ -68,8 +32,6 @@ export default class HouseList extends React.Component{
     this.getCity('AREA|e4940177-c04c-383d')
     this.getCityList()
     
-    // console.log('1',this.state.cityList)
-    // console.log('2',this.state.season)
   }
   
   async getHouseInfo(){
@@ -174,9 +136,34 @@ export default class HouseList extends React.Component{
   onScrollChange = (value) => {
     console.log(value);
   }
-  handleSubmit= (e) =>{
-    e.preventDefault()
-    console.log('click')
+  async collections(e,houseCode){
+    if(localStorage.getItem('isLogin')){
+      const token=localStorage.getItem('hkzf_token')
+      console.log('token',token)
+      const hosecode=e.houseCode
+      console.log('code',hosecode)
+      // const res= await API.post(`/user/favorites/${hosecode}`)
+    
+      const res= await axios.post(`http://localhost:8080/user/favorites/${hosecode}`,null,{
+        headers:{
+            authorization: token
+        }
+    })
+    // const res= await axios.post(`http://localhost:8080/user/logout`
+    // )
+    // const res= await API.post('http://localhost:8080/user/logout',{
+    //   headers:{
+    //     authorization: token
+    //   }
+    // })
+      console.log('RRRR',res)
+      // console.log('hosuecode',houseCode)
+      // console.log('e',e.houseCode)
+    }
+    else{
+      Toast.loading('Please go login!',3,null,false)
+    }
+
   }
     render(){
       return(
@@ -209,12 +196,10 @@ export default class HouseList extends React.Component{
               House type:{item.title}
               </div>
               <div>
-               <h5>Price: {item.price}RMB</h5>
-               <form onSubmit={this.handleSubmit}>
-               <button  type="submit">
-              Login
-            </button>
-               </form>
+               <h5>Price: {item.price}RMB </h5>
+               <button onClick={(e)=>this.collections(item,e)}>
+                 Save to Collection
+               </button>                         
               </div>
             </div>
           

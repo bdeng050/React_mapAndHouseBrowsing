@@ -8,6 +8,8 @@ import Map from "./pages/Map";
 import Login from './pages/Login'
 import test from './pages/test'
 import HouseList from "./pages/HouseList";
+import Profile from "./pages/Profile";
+import Fav from "./pages/fav";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
       <Route path="/map" component={Map}></Route>
       <Route path="/test" component={test}></Route>
       <Route path="/houseList" component={HouseList}></Route>
+      <Route path="/profile" component={Profile}></Route>
+      <Route path="/fav" component={Fav}></Route>
       
       <Route path="/" exact render={()=> <Redirect to = "/home/index"/>}></Route>
     </div>
