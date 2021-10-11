@@ -60,30 +60,9 @@ export default class Profile extends Component {
     else{
       localStorage.setItem('isLogin',false)     
     }
-    
-    //console.log('token',localStorage.getItem('isLogin'))
     this.getUserInfo()
   }
-//   getStart(){
-//     const token= localStorage.getItem('hkzf_token')
-//     console.log('token',this.state.token)
-//     this.setState({
-//       tokens:token 
-//   })
-//     //console.log('token',this.state.token)
-//     if(token!==null){
-//         this.setState({
-//             isLogin:true
-//         })
-//     }
-//     else{
-//         this.setState({
-//           isLogin:false
-//       })
-//     }
-// }
 
-  // 退出
   logout = () => {
     alert('提示', '是否确定退出?', [
       { text: '取消' },
@@ -226,35 +205,7 @@ export default class Profile extends Component {
               </div>
             )
           }
-        />
-        {this.state.showFavList?(
-        <div>
-        <NavBar
-        mode="light"
-        icon={<Icon type="left" />}
-        onLeftClick={() => this.props.history.go(-1)}
-        >
-            MY collection</NavBar>
-            {this.state.favList.map(item => (
-            <div>
-              <div>
-                <img src={`http://localhost:8080${item.houseImg}`}></img>
-              </div>
-              <div>
-              House type:{item.title}
-              </div>
-              <div>
-               <h5>Price: {item.price}RMB </h5>
-               <button onClick={(e)=>this.collections(item,e)}>
-                 Save to Collection
-               </button>                         
-              </div>
-            </div>
-          
-          ))}
-          
-        </div>):null}
-        
+        />       
       </div>
     )
   }
