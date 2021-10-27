@@ -38,7 +38,7 @@ export default class Fav extends React.Component{
       const token= localStorage.getItem('hkzf_token')
       console.log('TOKEN',token)
       console.log('LOGIN',localStorage.getItem('isLogin'))
-      const res= await axios.get('http://localhost:8080/user/favorites',{
+      const res= await axios.get('http://localhost:8080/user/houses',{
           headers:{
               authorization: token
           }
@@ -57,9 +57,9 @@ export default class Fav extends React.Component{
         >
             MY collection</NavBar>
             {this.state.favList.length < 1&&
-        <h2>
-          There is nothing in your collection, <Link to="/map">GO</Link> add some!
-        </h2>
+        <h1>
+          You didn't post any houses at this moment, click <Link to="/rent">GO</Link> post some!
+        </h1>
       }
             {this.state.favList.map(item => (
             <div>

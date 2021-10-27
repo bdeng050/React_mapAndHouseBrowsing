@@ -1,18 +1,3 @@
-// .Nav img{
-//     width:48px
-// }
-
-// .Nav h2{
-//     font-size:13px;
-//     font-weight: normal;
-// }
-// .Nav.am-flexbox{
-//     text-align: center;
-// }
-// .Nav{
-//     padding:10px 0;
-// }
-
 .swiper {
     position: relative;
     height: 212px;
@@ -24,6 +9,9 @@
         padding:0 10px
     }
   }
+.slider am-carousel{
+  height: 175px;
+}
   
   .nav {
     padding: 10px 0;

@@ -31,18 +31,18 @@ export default class index extends React.Component{
   handleSubmit= async e =>{
       e.preventDefault()
       const {userName,passWord}= this.state
-      const res= await axios.post('http://localhost:8080/user/login',{
+      const res= await axios.post('http://localhost:8080/user/registered',{
           username:userName,
           password: passWord
       })
-      console.log('login res',res)
+      console.log('register res',res)
       const status= res.data.status;
       const body= res.data.body;
       const description= res.data.description
       if(status===200){
-        Toast.loading('Login in Success!',3,null,false)
+        Toast.loading('Register Success!',3,null,false)
           localStorage.setItem('hkzf_token',body.token)
-           this.props.history.push('/index')
+          this.props.history.go(-1)
                       }
       else{
           Toast.info(description,2,null,false)
@@ -53,7 +53,7 @@ export default class index extends React.Component{
       const {userName, passWord}= this.state
       return(
          <div>
-             <NavHeader>Login Account</NavHeader>
+             <NavHeader>Register your Account</NavHeader>
              <WingBlank>
         <form onSubmit={this.handleSubmit}>
           <div className={styles.formItem}>
@@ -77,13 +77,13 @@ export default class index extends React.Component{
           </div>
           <div className={styles.formSubmit}>
             <button className={styles.submit} type="submit">
-              Login
+              Register
             </button>
           </div>
         </form>
         <Flex className={styles.backHome}>
           <Flex.Item>
-            <Link to="/register">No account, go register</Link>
+            <Link to="/login">Had Account, go Login</Link>
           </Flex.Item>
           <Flex.Item>
             <Link to="/index">Back to the main page</Link>

@@ -79,7 +79,7 @@ export default class Map extends React.Component{
           }
       }
       async getHouseList(id){
-        Toast.loading('FukU',0,null,false)
+        Toast.loading('wait...',0,null,false)
           const res= await axios.get(`http://localhost:8080/houses?cityId=${id}`)
           //console.log('HouseList',res)
           this.setState({
@@ -141,7 +141,7 @@ export default class Map extends React.Component{
       }
       
       async renderOverlays(id){
-        Toast.loading('JustFkingWait',0,null,false)
+        Toast.loading('Map Redirecting',0,null,false)
           const res= await axios.get(`http://localhost:8080/area/map?id=${id}`)
           Toast.hide()
           console.log('renderOverlays',res)
@@ -150,6 +150,36 @@ export default class Map extends React.Component{
           Data.forEach(item=>{
               this.createOverlays(item,nextZoom)
           })
+      }
+      async collections(e,houseCode){
+        if(localStorage.getItem('isLogin')){
+          const token=localStorage.getItem('hkzf_token')
+          console.log('token',token)
+          const hosecode=e.houseCode
+          console.log('code',hosecode)
+          // const res= await API.post(`/user/favorites/${hosecode}`)
+        
+          const res= await axios.post(`http://localhost:8080/user/favorites/${hosecode}`,null,{
+            headers:{
+                authorization: token
+            }
+        })
+        // const res= await axios.post(`http://localhost:8080/user/logout`
+        // )
+        // const res= await API.post('http://localhost:8080/user/logout',{
+        //   headers:{
+        //     authorization: token
+        //   }
+        // })
+          console.log('RRRR',res)
+          Toast.loading('Save to collection successfully!',3,null,false)
+          // console.log('hosuecode',houseCode)
+          // console.log('e',e.houseCode)
+        }
+        else{
+          Toast.loading('Please go login!',3,null,false)
+        }
+    
       }
 
       render(){
@@ -162,7 +192,7 @@ export default class Map extends React.Component{
           ].join(' ')}
         >
           <div className={styles.titleWrap}>
-            <h1 className={styles.listTitle}>Housing INFO</h1>
+            <h1 className={styles.listTitle}>Result Housing INFO based on your brwosing</h1>
           </div>
           <div className={styles.houseItems}>
           {this.state.houseList.map(item => (
@@ -174,13 +204,13 @@ export default class Map extends React.Component{
               House type:{item.title}
               </div>
               <div>
-               <h5>Price: {item.price}RMB</h5>
-              </div>
-            </div>
-          
-          ))}
-              
-            
+               <h5>Price: {item.price}RMB </h5>
+               <button className={styles.button} onClick={(e)=>this.collections(item,e)}>
+                 Save to Collection
+               </button>                         
+              </div>   
+            </div>          
+          ))}  
           </div>
               </div>
           </div>

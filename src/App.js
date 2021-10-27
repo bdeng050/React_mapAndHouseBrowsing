@@ -10,7 +10,11 @@ import test from './pages/test'
 import HouseList from "./pages/HouseList";
 import Profile from "./pages/Profile";
 import Fav from "./pages/fav";
-import rent from "./pages/rent"
+import rent from "./pages/rent";
+import index from "./pages/index";
+import register from "./pages/register"
+import myrent from "./pages/myrent"
+
 
 function App() {
   return (
@@ -31,8 +35,9 @@ function App() {
       <Route path="/profile" component={Profile}></Route>
       <Route path="/fav" component={Fav}></Route>
       <Route path="/rent" component={rent}></Route>
-      
-      <Route path="/" exact render={()=> <Redirect to = "/home/index"/>}></Route>
+      <Route path="/index" component={index}></Route>
+      <Route path="/register" component={register}></Route>
+      <Route path="/myrent" component={myrent}></Route>
     </div>
     </Router>
   );

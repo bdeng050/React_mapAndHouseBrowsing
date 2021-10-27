@@ -8,6 +8,8 @@ import Nav4 from '../../assets/images/nav-4.png'
 import './index.scss'
 import SearchHeader from '../../components/SearchHeader'
 import { getCurrentCity } from '../../utils'
+import { Button, Space } from 'antd-mobile'
+
 
 // navigator.geolocation.getCurrentPosition(position=>{
 //   console.log('当前位置', position)
@@ -23,26 +25,32 @@ export default class index extends React.Component{
           {
             id: 1,
             img: Nav1,
-            title: '整租',
-            path: '/home/list'
+            title: 'Login/Register',
+            path: '/login'
           },
           {
             id: 2,
             img: Nav2,
-            title: '合租',
-            path: '/home/list'
+            title: 'Find House By Filter',
+            path: '/houseList'
           },
           {
             id: 3,
             img: Nav3,
-            title: '地图找房',
+            title: 'Find House By Map',
             path: '/map'
           },
           {
             id: 4,
             img: Nav4,
-            title: '去出租',
-            path: '/rent/add'
+            title: 'Post Your New House',
+            path: '/rent'
+          },
+          {
+            id: 4,
+            img: Nav4,
+            title: 'My Profile',
+            path: '/profile'
           }
         ],
         groups:[],
@@ -65,7 +73,7 @@ export default class index extends React.Component{
 
       async getSwipers(){
           const res= await axios.get('http://localhost:8080/home/swiper');
-        //   console.log('The data is',res)
+          console.log('The data is',res)
         const num= res.data.body
          //console.log(num[0])
           
@@ -85,40 +93,24 @@ export default class index extends React.Component{
         console.log('这些人是',res.data[0]);
       }
       async componentDidMount() {
-        // simulate img loading
-        
         this.getSwipers()
         this.getGroups()
         this.getPersons()
-         //const curCity=new window.BMap.LocalCity()
-         //console.log('当前城市',curCity)
-      //    curCity.get(async res=>{
-      //    console.log('当前城市',res)
-      //    const result=await axios.get(`http://localhost:8080/area/info?name=${res.imgSrc}`)
-      //    console.log(result)
-      //    this.setState({
-      //      curCityName:result.data.body.label
-      //    })
-      //  })
         const curCity= await getCurrentCity()
         console.log('Current City:',curCity)
         this.setState({
           curCityName: curCity.label
         })
-        
-        
 
       }
       renderSwipers(){
           return this.state.swipers.map(item => (
             <a
               key={item.id}
-              href="http://www.alipay.com"
               style={{ display: 'inline-block', width: '100%', height: this.state.imgHeight }}
             >
               <img
                 src={`http://localhost:8080${item.imgSrc}`}
-                alt=""
                 style={{ width: '100%', verticalAlign: 'top' }}
                 onLoad={() => {
                   // fire window resize event to change height
@@ -140,6 +132,7 @@ export default class index extends React.Component{
           </Flex.Item>
         ))
       }
+
       render() {
         return (
           <div >
@@ -151,17 +144,21 @@ export default class index extends React.Component{
             >
                 {this.renderSwipers()}
         </Carousel>
-        <SearchHeader cityName={this.state.curCityName} />
+
+        <Button color='green' size='large' onClick={() => this.props.history.push('/cityList')}>
+          Current City:&nbsp;{this.state.curCityName}&nbsp; (Click HERE to Change City, the MAP and SearchEngine will change based on your current city)
+        </Button>
+        {/* <SearchHeader cityName={this.state.curCityName} /> */}
         {/* </div> */}
         {/* ***************** */}
         {/* ********************* */}
         <Flex className="Nav">{this.renderNavs()}</Flex>
         {/* ******************** */}
-        <div className="group">
+        {/* <div className="group">
         <h3 className="group-title">
             租房小组 <span className="more">更多</span>
           </h3>
-        </div>
+        </div> */}
         <Grid
             data={this.state.groups}
             columnNum={2}
@@ -170,8 +167,8 @@ export default class index extends React.Component{
             renderItem={item => (
               <Flex className="group-item" justify="around" key={item.id}>
                 <div className="desc">
-                  <p className="title">{item.title}</p>
-                  <span className="info">{item.desc}</span>
+                  {/* <p className="title">{item.title}</p> */}
+                  {/* <span className="info">{item.desc}</span> */}
                 </div>
                 <img src={`http://localhost:8080${item.imgSrc}`} alt="" />
               </Flex>

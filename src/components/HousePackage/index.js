@@ -6,63 +6,57 @@ import styles from './index.module.css'
 const HOUSE_PACKAGE = [
   {
     id: 1,
-    name: '衣柜',
+    name: 'wardrobe',
     icon: 'icon-wardrobe'
   },
   {
     id: 2,
-    name: '洗衣机',
+    name: 'washer',
     icon: 'icon-wash'
   },
   {
     id: 3,
-    name: '空调',
+    name: 'air conditioner',
     icon: 'icon-air'
   },
   {
     id: 4,
-    name: '天然气',
+    name: 'gas',
     icon: 'icon-gas'
   },
   {
     id: 5,
-    name: '冰箱',
+    name: 'fridge',
     icon: 'icon-ref'
   },
   {
     id: 6,
-    name: '暖气',
+    name: 'heat',
     icon: 'icon-Heat'
   },
   {
     id: 7,
-    name: '电视',
+    name: 'TV',
     icon: 'icon-vid'
   },
   {
     id: 8,
-    name: '热水器',
+    name: 'heater',
     icon: 'icon-heater'
   },
   {
     id: 9,
-    name: '宽带',
+    name: 'WI-FI',
     icon: 'icon-broadband'
   },
   {
     id: 10,
-    name: '沙发',
+    name: 'SOFA',
     icon: 'icon-sofa'
   }
 ]
 
-/* 
-  该组件的两种功能：
-  1 根据传入的 list 展示房屋配置列表（房源详情页面）
-    <HousePackage list={['衣柜', '洗衣机']} />
-  2 从所有配置列表中选择房屋配置（发布房源页面）
-    <HousePackage select onSelect={selectedItems => {...}} />
-*/
+
 class HousePackage extends Component {
   state = {
     // 选中名称

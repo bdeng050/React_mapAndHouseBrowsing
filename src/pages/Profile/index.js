@@ -11,7 +11,7 @@ import styles from './index.module.css'
 // 菜单数据
 const menus = [
   { id: 1, name: 'My Collection', iconfont: 'icon-coll', to:'./fav'},
-  { id: 2, name: 'My rent', iconfont: 'icon-ind', to: '/rent' },
+  { id: 2, name: 'My rent', iconfont: 'icon-ind', to: '/myrent' },
   // { id: 3, name: '看房记录', iconfont: 'icon-record' },
   // {
   //   id: 4,
@@ -64,10 +64,10 @@ export default class Profile extends Component {
   }
 
   logout = () => {
-    alert('提示', '是否确定退出?', [
-      { text: '取消' },
+    alert('INFO', 'Are you sure to log out?', [
+      { text: 'cancel' },
       {
-        text: '退出',
+        text: 'log out any way',
         onPress: async () => {
           // 调用退出接口
           await API.post('/user/logout')
@@ -152,19 +152,20 @@ export default class Profile extends Component {
               />
             </div>
             <div className={styles.user}>
-              <div className={styles.name}>{nickname || '游客'}</div>
+              <div className={styles.name}>{nickname || 'Welcome'}</div>
               {/* 登录后展示： */}
               {isLogin ? (
                 <>
                   <div className={styles.auth}>
-                    <span onClick={this.logout}>退出</span>
+                    <span onClick={()=>this.logout()}>Log Out</span>
+                    <span onClick={() => this.props.history.push('/index')}>Go Back to Main Page</span>
                   </div>
-                  <div className={styles.edit}>
+                  {/* <div className={styles.edit} >
                     编辑个人资料
                     <span className={styles.arrow}>
                       <i className="iconfont icon-arrow" />
                     </span>
-                  </div>
+                  </div> */}
                 </>
               ) : (
                 <div className={styles.edit}>
@@ -175,7 +176,7 @@ export default class Profile extends Component {
                     onClick={() => history.push('/login')}
                     onClick={()=>console.log('click')}
                   >
-                    去登录
+                    Go Login
                   </button>
                 </div>
               )}
